@@ -10,6 +10,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtTagSizeTracker;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 import fi.dy.masa.litematica.Litematica;
 import fi.dy.masa.malilib.util.Constants;
@@ -55,6 +56,22 @@ public class NbtUtils
     }
 
     @Nullable
+    public static Vec3i readVec3iFromIntArray(@Nullable NbtCompound tag, String tagName)
+    {
+        if (tag != null && tag.contains(tagName, Constants.NBT.TAG_INT_ARRAY))
+        {
+            int[] arr =  tag.getIntArray(tagName);
+
+            if (arr != null && arr.length == 3)
+            {
+                return new Vec3i(arr[0], arr[1], arr[2]);
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static NbtCompound readNbtFromFile(File file)
     {
         if (file.exists() == false || file.canRead() == false)
@@ -88,7 +105,7 @@ public class NbtUtils
                 {
                     is.close();
                     is = new FileInputStream(file);
-                    nbt = NbtIo.read(file);
+                    nbt = NbtIo.read(file.toPath());
                 }
                 catch (Exception ignore) {}
             }
